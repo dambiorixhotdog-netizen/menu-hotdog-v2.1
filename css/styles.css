@@ -1,0 +1,26 @@
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #121824;
+  color: #EDF2F7;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.font-title {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.amber-glow {
+  box-shadow: 0 0 15px rgba(246, 173, 85, 0.25);
+}
+
+.red-glow {
+  box-shadow: 0 0 15px rgba(229, 62, 62, 0.35);
+}

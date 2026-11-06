@@ -1,0 +1,122 @@
+/* ============================================
+   IMPRESIÓN DE TICKET - D'AMBIORIX HOTDOG
+   Objetivo: imprimir SOLO el ticket, 1 hoja, sin repetir
+   ============================================ */
+
+@media print {
+  /* Resetear márgenes y fondo */
+  @page {
+    size: letter;
+    margin: 10mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Ocultar TODO el body excepto el modal del ticket */
+  body > *:not(#ticketModal) {
+    display: none !important;
+  }
+
+  /* El modal del ticket pasa a flujo normal (NO fixed) */
+  #ticketModal {
+    display: block !important;
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    overflow: visible !important;
+    z-index: auto !important;
+  }
+
+  /* Su contenedor interno (tarjeta) también en flujo normal */
+  #ticketModal > div {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Ocultar botones de acción (WhatsApp, Imprimir, Aceptar, X) */
+  #ticketModal button {
+    display: none !important;
+  }
+
+  /* Ocultar el bloque de botones completo (hermano de #printableTicket) */
+  #ticketModal > div > div:not(#printableTicket) {
+    display: none !important;
+  }
+
+  /* El ticket visible: 1 sola página, sin cortes */
+  #printableTicket {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 15mm !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1.5px solid #000000 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
+    page-break-before: avoid !important;
+  }
+
+  /* Resetear TODOS los estilos oscuros dentro del ticket */
+  #printableTicket * {
+    color: #000000 !important;
+    background: transparent !important;
+    border-color: #000000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* El número de turno debe resaltar (grande y en negrita) */
+  #ticketTurnoDisplay {
+    font-size: 42pt !important;
+    font-weight: 900 !important;
+    color: #000000 !important;
+    background: #f0f0f0 !important;
+    border: 2px solid #000000 !important;
+    border-radius: 6px !important;
+    padding: 8pt 0 !important;
+    margin: 4pt 0 !important;
+  }
+
+  /* Líneas punteadas del ticket */
+  #printableTicket .border-dashed {
+    border-style: dashed !important;
+  }
+
+  /* Evitar que un ítem se corte a la mitad entre páginas */
+  #printableTicket > * {
+    page-break-inside: avoid;
+  }
+
+  /* Nada de animaciones ni transiciones al imprimir */
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
