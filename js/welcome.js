@@ -2,6 +2,20 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
 
 const supabase = createClient('https://eiphlylrwwijogoyqwns.supabase.co', 'sb_publishable_afTPTTSnyflSQpDVZLzlvA_1G08TBJp');
 
+// Fallback seguro para el ID
+const SITE_SETTINGS_ID = (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.siteSettingsId) 
+  ? APP_CONFIG.siteSettingsId 
+  : '00000000-0000-0000-0000-000000000001';
+
+const WELCOME_DEFAULTS = {
+  whatsapp_phone: "18095550199",
+  instagram_url: "",
+  location_url: "",
+  menu_url: "",
+  welcome_message: "¡Bienvenido a D'AMBIORIX HOTDOG! Higiene, Calidad y Sabor!!",
+  welcome_enabled: true
+};
+
 window.siteSettings = null;
 
 async function loadSiteSettings() {
@@ -9,14 +23,14 @@ async function loadSiteSettings() {
     const { data, error } = await supabase
       .from('site_settings')
       .select('*')
-      .eq('id', APP_CONFIG.siteSettingsId)
+      .eq('id', SITE_SETTINGS_ID)
       .maybeSingle();
 
     if (error) throw error;
-    window.siteSettings = data || { ...APP_CONFIG.welcomeDefaults, id: APP_CONFIG.siteSettingsId };
+    window.siteSettings = data || { ...WELCOME_DEFAULTS, id: SITE_SETTINGS_ID };
   } catch (err) {
     console.warn('No se pudo cargar site_settings, usando defaults.', err);
-    window.siteSettings = { ...APP_CONFIG.welcomeDefaults, id: APP_CONFIG.siteSettingsId };
+    window.siteSettings = { ...WELCOME_DEFAULTS, id: SITE_SETTINGS_ID };
   }
   renderWelcomeModal();
 }
@@ -28,7 +42,7 @@ function getMenuUrl() {
 }
 
 function renderWelcomeModal() {
-  const s = window.siteSettings || APP_CONFIG.welcomeDefaults;
+  const s = window.siteSettings || WELCOME_DEFAULTS;
 
   if (s.welcome_enabled === false) {
     const modal = document.getElementById('welcomeModal');
@@ -37,7 +51,7 @@ function renderWelcomeModal() {
   }
 
   const msgEl = document.getElementById('welcomeMessage');
-  if (msgEl) msgEl.innerText = s.welcome_message || APP_CONFIG.welcomeDefaults.welcome_message;
+  if (msgEl) msgEl.innerText = s.welcome_message || WELCOME_DEFAULTS.welcome_message;
 
   const waBtn = document.getElementById('welcomeWhatsappBtn');
   if (waBtn) {

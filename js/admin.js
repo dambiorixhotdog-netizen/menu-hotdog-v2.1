@@ -1,6 +1,21 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
 
 const supabase = createClient('https://eiphlylrwwijogoyqwns.supabase.co', 'sb_publishable_afTPTTSnyflSQpDVZLzlvA_1G08TBJp');
+
+// Fallback seguro para el ID
+const SITE_SETTINGS_ID = (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.siteSettingsId) 
+  ? APP_CONFIG.siteSettingsId 
+  : '00000000-0000-0000-0000-000000000001';
+
+const WELCOME_DEFAULTS = {
+  whatsapp_phone: "18095550199",
+  instagram_url: "",
+  location_url: "",
+  menu_url: "",
+  welcome_message: "¡Bienvenido a D'AMBIORIX HOTDOG! Higiene, Calidad y Sabor!!",
+  welcome_enabled: true
+};
+
 let allProducts = [], allCategories = [];
 
 async function initApp() {
@@ -52,19 +67,19 @@ async function loadSettings() {
 }
 
 async function loadWelcomeSettings() {
-  console.log('[welcome] Cargando site_settings...');
+  console.log('[welcome] Cargando site_settings con ID:', SITE_SETTINGS_ID);
   try {
     const { data, error } = await supabase
       .from('site_settings')
       .select('*')
-      .eq('id', APP_CONFIG.siteSettingsId)
+      .eq('id', SITE_SETTINGS_ID)
       .maybeSingle();
 
     console.log('[welcome] select data:', data, 'error:', error);
 
     if (error) throw error;
 
-    const s = data || APP_CONFIG.welcomeDefaults;
+    const s = data || WELCOME_DEFAULTS;
     document.getElementById('welcome-message').value = s.welcome_message || '';
     document.getElementById('welcome-instagram').value = s.instagram_url || '';
     document.getElementById('welcome-location').value = s.location_url || '';
@@ -73,7 +88,7 @@ async function loadWelcomeSettings() {
     console.log('[welcome] Formulario rellenado con:', s);
   } catch (err) {
     console.error('[welcome] Error cargando site_settings:', err);
-    alert('No se pudo cargar la configuración de bienvenida: ' + (err.message || err));
+    alert('No se pudo cargar la configuración de bienvenida: ' + (err.message || JSON.stringify(err)));
   }
 }
 
@@ -110,23 +125,21 @@ document.getElementById('welcomeForm').addEventListener('submit', async (e) => {
   console.log('[welcome] payload a guardar:', payload);
 
   try {
-    // 1) Intentar update
-    const { data: updData, error: updError, count } = await supabase
+    const { data: updData, error: updError } = await supabase
       .from('site_settings')
       .update(payload)
-      .eq('id', APP_CONFIG.siteSettingsId)
+      .eq('id', SITE_SETTINGS_ID)
       .select();
 
-    console.log('[welcome] update data:', updData, 'error:', updError, 'count:', count);
+    console.log('[welcome] update data:', updData, 'error:', updError);
 
     if (updError) throw updError;
 
-    // 2) Si no se actualizó ninguna fila (singleton no existe), insertar
     if (!updData || updData.length === 0) {
       console.log('[welcome] No se actualizó ninguna fila. Insertando singleton...');
       const { data: insData, error: insError } = await supabase
         .from('site_settings')
-        .insert([{ id: APP_CONFIG.siteSettingsId, ...payload }])
+        .insert([{ id: SITE_SETTINGS_ID, ...payload }])
         .select();
       console.log('[welcome] insert data:', insData, 'error:', insError);
       if (insError) throw insError;
