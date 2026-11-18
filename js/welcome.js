@@ -87,6 +87,11 @@ function renderWelcomeModal() {
   if (modal) modal.classList.remove('hidden');
 }
 
+window.openWelcomeModal = function () {
+  const modal = document.getElementById('welcomeModal');
+  if (modal) modal.classList.remove('hidden');
+};
+
 window.closeWelcomeModal = function () {
   const modal = document.getElementById('welcomeModal');
   if (modal) modal.classList.add('hidden');
