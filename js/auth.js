@@ -1,7 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-
-// URL Y LLAVE CORREGIDAS
-const supabase = createClient('https://eiphlylrwwijogoyqwns.supabase.co', 'sb_publishable_afTPTTSnyflSQpDVZLzlvA_1G08TBJp');
+import { supabase } from './supabase.js';
 
 const loginForm = document.getElementById('loginForm');
 supabase.auth.getSession().then(({ data: { session } }) => { 
