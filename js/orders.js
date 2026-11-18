@@ -1,4 +1,5 @@
 import { supabase } from './supabase.js';
+
 // Mostrar/Ocultar campo de dirección
 window.addEventListener('DOMContentLoaded', () => {
   const orderType = document.getElementById('orderType');
@@ -32,13 +33,10 @@ function shareLocation() {
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
       
-      // Crear enlace de Google Maps
       const mapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
       
-      // Guardar en el input oculto
       document.getElementById('customerLocationURL').value = mapUrl;
       
-      // Mostrar confirmación
       const statusMsg = document.getElementById('locationStatus');
       statusMsg.classList.remove('hidden');
       
@@ -90,36 +88,59 @@ async function confirmOrder() {
     return;
   }
 
-  const turnoNum = `#T-${AppState.orderCounter}`;
-  AppState.orderCounter++;
-  saveOrderCounter();
+  // Bloquear el botón para evitar doble clic mientras se pide el turno
+  const confirmBtn = document.querySelector('button[onclick="confirmOrder()"]');
+  if (confirmBtn) {
+    confirmBtn.disabled = true;
+    confirmBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
+  }
 
-  const newOrder = {
-    id: 'ORD-' + Date.now(),
-    turno: turnoNum,
-    customer: customerName,
-    type: orderType,
-    payment: paymentMethod,
-    notes: notes,
-    address: address,
-    locationURL: locationURL, // Guardamos el link de Google Maps
-    items: [...AppState.cart],
-    total: calculateCartSubtotal(),
-    status: APP_CONFIG.orderStatus.PREPARING,
-    date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  };
+  try {
+    // PEDIR EL TURNO REAL A SUPABASE
+    const { data: turnoNum, error: turnoError } = await supabase.rpc('get_next_order_turn');
+    
+    if (turnoError) throw turnoError;
+    if (!turnoNum) throw new Error('No se pudo obtener el turno.');
 
-  AppState.currentTicket = newOrder;
-  AppState.cart = [];
-  updateCartUI();
-  closeCartDrawer();
-  playOrderBeep();
+    const turnoFormateado = `#T-${turnoNum}`;
 
-  showTicketModal(newOrder);
+    const newOrder = {
+      id: 'ORD-' + Date.now(),
+      turno: turnoFormateado,
+      customer: customerName,
+      type: orderType,
+      payment: paymentMethod,
+      notes: notes,
+      address: address,
+      locationURL: locationURL,
+      items: [...AppState.cart],
+      total: calculateCartSubtotal(),
+      status: APP_CONFIG.orderStatus.PREPARING,
+      date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
 
-  setTimeout(() => {
-    sendWhatsAppOrder(newOrder);
-  }, 500);
+    AppState.currentTicket = newOrder;
+    AppState.cart = [];
+    updateCartUI();
+    closeCartDrawer();
+    playOrderBeep();
+
+    showTicketModal(newOrder);
+
+    setTimeout(() => {
+      sendWhatsAppOrder(newOrder);
+    }, 500);
+
+  } catch (err) {
+    console.error("Error al generar turno:", err);
+    alert('Hubo un problema al generar tu turno. Por favor intenta de nuevo.');
+  } finally {
+    // Restaurar el botón
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.innerHTML = '<i class="fa-brands fa-whatsapp text-lg"></i> Confirmar y Enviar';
+    }
+  }
 }
 
 // ===== MOSTRAR EL TICKET =====
@@ -140,7 +161,6 @@ function showTicketModal(order) {
     addressRow.classList.add('hidden');
   }
 
-  // Mostrar link de Google Maps en el ticket
   const mapRow = document.getElementById('ticketMapRow');
   const mapLink = document.getElementById('ticketMapLink');
   if (order.type === 'Domicilio' && order.locationURL) {
