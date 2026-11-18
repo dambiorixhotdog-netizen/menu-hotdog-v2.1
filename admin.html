@@ -26,6 +26,7 @@
     <div class="flex gap-2 border-b border-slate-800 pb-4 overflow-x-auto">
       <button onclick="showTab('products')" id="tab-products" class="px-4 py-2 rounded-xl font-bold bg-amber-500 text-slate-950 whitespace-nowrap">Productos</button>
       <button onclick="showTab('categories')" id="tab-categories" class="px-4 py-2 rounded-xl font-bold text-slate-400 whitespace-nowrap">Categorías</button>
+      <button onclick="showTab('welcome')" id="tab-welcome" class="px-4 py-2 rounded-xl font-bold text-slate-400 whitespace-nowrap">Bienvenida</button>
       <button onclick="showTab('settings')" id="tab-settings" class="px-4 py-2 rounded-xl font-bold text-slate-400 whitespace-nowrap">Ajustes (WhatsApp)</button>
     </div>
 
@@ -57,6 +58,36 @@
         <div><label class="text-xs text-slate-400 font-bold">Orden</label><input type="number" id="cat-order" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white" required></div>
         <div class="md:col-span-2"><label class="text-xs text-slate-400 font-bold">Imagen de Categoría</label><input type="file" id="cat-img" accept="image/*" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-sm text-slate-300"><img id="cat-img-preview" class="hidden w-20 h-20 object-cover rounded-md mt-2"></div>
         <div class="md:col-span-2 flex gap-2 pt-4"><button type="submit" class="bg-amber-500 text-slate-950 font-bold px-6 py-2.5 rounded-xl">Guardar</button><button type="button" onclick="hideCategoryForm()" class="bg-slate-800 text-white font-bold px-6 py-2.5 rounded-xl">Cancelar</button></div>
+      </form>
+    </section>
+
+    <!-- FORM BIENVENIDA -->
+    <section id="welcome-section" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 hidden max-w-2xl">
+      <h2 class="font-title text-lg text-white font-bold mb-1">Modal de Bienvenida</h2>
+      <p class="text-xs text-slate-500 mb-4">Configura lo que verá el cliente al entrar al menú.</p>
+      <form id="welcomeForm" class="space-y-4">
+        <div>
+          <label class="text-xs text-slate-400 font-bold">Mensaje de bienvenida</label>
+          <textarea id="welcome-message" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white" placeholder="¡Bienvenido a D'AMBIORIX HOTDOG!"></textarea>
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 font-bold">Instagram (URL completa)</label>
+          <input type="url" id="welcome-instagram" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white" placeholder="https://instagram.com/tu_usuario">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 font-bold">Ubicación (URL de Google Maps)</label>
+          <input type="url" id="welcome-location" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white" placeholder="https://maps.google.com/?q=...">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 font-bold">Enlace del menú (para compartir)</label>
+          <input type="url" id="welcome-menu-url" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-white" placeholder="https://tudominio.com/index.html">
+          <p class="text-xs text-slate-500 mt-1">Si lo dejas vacío, se usará la URL actual del navegador.</p>
+        </div>
+        <div class="flex items-center gap-2 pt-2">
+          <input type="checkbox" id="welcome-enabled" class="w-4 h-4 accent-amber-500">
+          <label class="text-sm text-slate-300 font-semibold">Mostrar modal de bienvenida a los clientes</label>
+        </div>
+        <button type="submit" class="bg-amber-500 text-slate-950 font-bold px-6 py-2.5 rounded-xl">Guardar Configuración</button>
       </form>
     </section>
 

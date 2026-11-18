@@ -35,16 +35,45 @@ window.showTab = function(tab) {
   document.getElementById('section-products').classList.toggle('hidden', tab !== 'products');
   document.getElementById('section-categories').classList.toggle('hidden', tab !== 'categories');
   document.getElementById('settings-section').classList.toggle('hidden', tab !== 'settings');
+  document.getElementById('welcome-section').classList.toggle('hidden', tab !== 'welcome');
   
   document.getElementById('tab-products').className = tab === 'products' ? 'px-4 py-2 rounded-xl font-bold bg-amber-500 text-slate-950 whitespace-nowrap' : 'px-4 py-2 rounded-xl font-bold text-slate-400 whitespace-nowrap';
   document.getElementById('tab-categories').className = tab === 'categories' ? 'px-4 py-2 rounded-xl font-bold bg-amber-500 text-slate-950 whitespace-nowrap' : 'px-4 py-2 rounded-xl font-bold text-slate-400 whitespace-nowrap';
   document.getElementById('tab-settings').className = tab === 'settings' ? 'px-4 py-2 rounded-xl font-bold bg-amber-500 text-slate-950 whitespace-nowrap' : 'px-4 py-2 rounded-xl font-bold text-slate-400 whitespace-nowrap';
+  document.getElementById('tab-welcome').className = tab === 'welcome' ? 'px-4 py-2 rounded-xl font-bold bg-amber-500 text-slate-950 whitespace-nowrap' : 'px-4 py-2 rounded-xl font-bold text-slate-400 whitespace-nowrap';
 };
 
 async function loadSettings() {
   const { data } = await supabase.from('categories').select('whatsapp_phone').limit(1);
   if (data && data.length > 0 && data[0].whatsapp_phone) {
     document.getElementById('whatsapp-number').value = data[0].whatsapp_phone;
+  }
+  await loadWelcomeSettings();
+}
+
+async function loadWelcomeSettings() {
+  console.log('[welcome] Cargando site_settings...');
+  try {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('*')
+      .eq('id', APP_CONFIG.siteSettingsId)
+      .maybeSingle();
+
+    console.log('[welcome] select data:', data, 'error:', error);
+
+    if (error) throw error;
+
+    const s = data || APP_CONFIG.welcomeDefaults;
+    document.getElementById('welcome-message').value = s.welcome_message || '';
+    document.getElementById('welcome-instagram').value = s.instagram_url || '';
+    document.getElementById('welcome-location').value = s.location_url || '';
+    document.getElementById('welcome-menu-url').value = s.menu_url || '';
+    document.getElementById('welcome-enabled').checked = s.welcome_enabled !== false;
+    console.log('[welcome] Formulario rellenado con:', s);
+  } catch (err) {
+    console.error('[welcome] Error cargando site_settings:', err);
+    alert('No se pudo cargar la configuración de bienvenida: ' + (err.message || err));
   }
 }
 
@@ -61,6 +90,55 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
   else alert('Número de WhatsApp actualizado correctamente');
   
   btn.innerText = 'Guardar Número';
+});
+
+document.getElementById('welcomeForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  console.log('[welcome] Submit disparado');
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.innerText = 'Guardando...';
+
+  const payload = {
+    welcome_message: document.getElementById('welcome-message').value.trim(),
+    instagram_url: document.getElementById('welcome-instagram').value.trim(),
+    location_url: document.getElementById('welcome-location').value.trim(),
+    menu_url: document.getElementById('welcome-menu-url').value.trim(),
+    welcome_enabled: document.getElementById('welcome-enabled').checked,
+    updated_at: new Date().toISOString()
+  };
+
+  console.log('[welcome] payload a guardar:', payload);
+
+  try {
+    // 1) Intentar update
+    const { data: updData, error: updError, count } = await supabase
+      .from('site_settings')
+      .update(payload)
+      .eq('id', APP_CONFIG.siteSettingsId)
+      .select();
+
+    console.log('[welcome] update data:', updData, 'error:', updError, 'count:', count);
+
+    if (updError) throw updError;
+
+    // 2) Si no se actualizó ninguna fila (singleton no existe), insertar
+    if (!updData || updData.length === 0) {
+      console.log('[welcome] No se actualizó ninguna fila. Insertando singleton...');
+      const { data: insData, error: insError } = await supabase
+        .from('site_settings')
+        .insert([{ id: APP_CONFIG.siteSettingsId, ...payload }])
+        .select();
+      console.log('[welcome] insert data:', insData, 'error:', insError);
+      if (insError) throw insError;
+    }
+
+    alert('Configuración de bienvenida guardada correctamente');
+  } catch (err) {
+    console.error('[welcome] Error guardando:', err);
+    alert('Error al guardar: ' + (err.message || JSON.stringify(err)));
+  } finally {
+    btn.innerText = 'Guardar Configuración';
+  }
 });
 
 async function loadData() {
