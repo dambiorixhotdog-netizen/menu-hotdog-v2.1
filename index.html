@@ -63,7 +63,7 @@
     </button>
   </div>
 
-  <!-- CARRITO DRAWER (CORREGIDO: 3 bloques flex) -->
+  <!-- CARRITO DRAWER -->
   <div id="cartDrawer" class="fixed inset-0 z-[90] invisible transition-all duration-300">
     <div id="cartBackdrop" onclick="closeCartDrawer()" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
     
@@ -128,7 +128,7 @@
     </div>
   </div>
 
-  <!-- MODAL PRODUCTOS (CORREGIDO) -->
+  <!-- MODAL PRODUCTOS -->
   <div id="categoryProductsModal" class="fixed inset-0 z-40 hidden flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md overflow-y-auto">
     <div class="bg-slate-900 border border-amber-500/40 rounded-3xl max-w-4xl w-full shadow-2xl relative flex flex-col max-h-[85vh] my-8">
       <div class="flex-shrink-0 p-6 pb-4 border-b border-slate-800/50 relative">
@@ -148,16 +148,12 @@
     </div>
   </div>
 
-  <!-- MODAL TICKET (CORREGIDO) -->
+  <!-- MODAL TICKET -->
   <div id="ticketModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md overflow-y-auto">
     <div class="bg-slate-900 border-2 border-amber-500 rounded-3xl max-w-md w-full shadow-2xl relative flex flex-col max-h-[90vh] my-8">
-      
-      <!-- Header Fijo -->
       <div class="flex-shrink-0 p-4 border-b border-slate-800/50 relative">
         <button onclick="closeTicketModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
       </div>
-
-      <!-- Cuerpo con Scroll (El ticket en sí) -->
       <div class="flex-grow overflow-y-auto p-4">
         <div id="printableTicket" class="bg-slate-950 p-5 rounded-2xl border border-amber-500/30 text-center space-y-4">
           <div class="inline-block bg-red-600/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border border-red-500/30">¡Pedido Recibido!</div>
@@ -168,8 +164,6 @@
           <div id="ticketNotesContainer" class="hidden text-left bg-slate-900 p-2 rounded text-[11px] text-slate-400 border border-slate-800"><strong>Notas:</strong> <span id="ticketNotes">--</span></div>
         </div>
       </div>
-
-      <!-- Footer Fijo -->
       <div class="flex-shrink-0 p-4 pt-2 space-y-2 border-t border-slate-800">
         <button onclick="sendWhatsAppOrder()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm"><i class="fa-brands fa-whatsapp text-lg"></i> Enviar por WhatsApp</button>
         <div class="grid grid-cols-2 gap-2">
@@ -191,16 +185,13 @@
     </div>
   </div>
 
-  <!-- MODAL BIENVENIDA (CORREGIDO) -->
+  <!-- MODAL BIENVENIDA -->
   <div id="welcomeModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-md overflow-y-auto">
     <div class="bg-slate-900 border-2 border-amber-500/50 rounded-3xl max-w-md w-full shadow-2xl relative flex flex-col max-h-[90vh] my-8">
-      
-      <!-- Header Fijo -->
       <div class="flex-shrink-0 p-4 pb-0 relative text-center">
         <button onclick="closeWelcomeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <!-- Cuerpo con Scroll -->
       <div class="flex-grow overflow-y-auto p-6 pt-2 space-y-5">
         <div class="text-center space-y-2">
           <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-red-600 via-amber-500 to-yellow-400 p-0.5 mx-auto shadow-md">
@@ -221,13 +212,16 @@
           <a id="welcomeInstagramBtn" href="#" target="_blank" rel="noopener" class="hidden w-full bg-gradient-to-r from-pink-600 via-purple-600 to-orange-500 hover:opacity-90 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm transition-all">
             <i class="fa-brands fa-instagram text-xl"></i> Síguenos en Instagram
           </a>
+          <!-- NUEVO BOTÓN TIKTOK -->
+          <a id="welcomeTiktokBtn" href="#" target="_blank" rel="noopener" class="hidden w-full bg-black hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm transition-all border border-slate-700">
+            <i class="fa-brands fa-tiktok text-xl"></i> Síguenos en TikTok
+          </a>
           <a id="welcomeLocationBtn" href="#" target="_blank" rel="noopener" class="hidden w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm transition-all">
             <i class="fa-solid fa-location-dot text-xl"></i> Ver Ubicación
           </a>
         </div>
       </div>
 
-      <!-- Footer Fijo (Acciones) -->
       <div class="flex-shrink-0 p-4 border-t border-slate-800 space-y-2 bg-slate-900 rounded-b-3xl">
         <button onclick="welcomeGoToMenu()" class="w-full bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-600 hover:to-red-700 text-slate-950 font-black py-3.5 rounded-xl shadow-lg font-title uppercase text-sm tracking-wider flex items-center justify-center gap-2 transition-all">
           <i class="fa-solid fa-burger"></i> Ver Menú

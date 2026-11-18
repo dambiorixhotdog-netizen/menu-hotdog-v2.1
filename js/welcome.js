@@ -1,8 +1,5 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
+import { supabase } from './supabase.js';
 
-const supabase = createClient('https://eiphlylrwwijogoyqwns.supabase.co', 'sb_publishable_afTPTTSnyflSQpDVZLzlvA_1G08TBJp');
-
-// Fallback seguro para el ID
 const SITE_SETTINGS_ID = (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.siteSettingsId) 
   ? APP_CONFIG.siteSettingsId 
   : '00000000-0000-0000-0000-000000000001';
@@ -10,6 +7,7 @@ const SITE_SETTINGS_ID = (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.siteSe
 const WELCOME_DEFAULTS = {
   whatsapp_phone: "18095550199",
   instagram_url: "",
+  tiktok_url: "",
   location_url: "",
   menu_url: "",
   welcome_message: "¡Bienvenido a D'AMBIORIX HOTDOG! Higiene, Calidad y Sabor!!",
@@ -70,6 +68,17 @@ function renderWelcomeModal() {
       igBtn.classList.remove('hidden');
     } else {
       igBtn.classList.add('hidden');
+    }
+  }
+
+  // NUEVO BOTÓN TIKTOK
+  const tkBtn = document.getElementById('welcomeTiktokBtn');
+  if (tkBtn) {
+    if (s.tiktok_url && s.tiktok_url.trim()) {
+      tkBtn.href = s.tiktok_url.trim();
+      tkBtn.classList.remove('hidden');
+    } else {
+      tkBtn.classList.add('hidden');
     }
   }
 
