@@ -67,7 +67,6 @@ async function loadSettings() {
 }
 
 async function loadWelcomeSettings() {
-  console.log('[welcome] Cargando site_settings con ID:', SITE_SETTINGS_ID);
   try {
     const { data, error } = await supabase
       .from('site_settings')
@@ -75,20 +74,17 @@ async function loadWelcomeSettings() {
       .eq('id', SITE_SETTINGS_ID)
       .maybeSingle();
 
-    console.log('[welcome] select data:', data, 'error:', error);
-
     if (error) throw error;
 
     const s = data || WELCOME_DEFAULTS;
     document.getElementById('welcome-message').value = s.welcome_message || '';
+    document.getElementById('welcome-whatsapp').value = s.whatsapp_phone || '';
     document.getElementById('welcome-instagram').value = s.instagram_url || '';
     document.getElementById('welcome-location').value = s.location_url || '';
     document.getElementById('welcome-menu-url').value = s.menu_url || '';
     document.getElementById('welcome-enabled').checked = s.welcome_enabled !== false;
-    console.log('[welcome] Formulario rellenado con:', s);
   } catch (err) {
-    console.error('[welcome] Error cargando site_settings:', err);
-    alert('No se pudo cargar la configuración de bienvenida: ' + (err.message || JSON.stringify(err)));
+    console.error('Error cargando site_settings:', err);
   }
 }
 
@@ -109,20 +105,18 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
 
 document.getElementById('welcomeForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  console.log('[welcome] Submit disparado');
   const btn = e.target.querySelector('button[type="submit"]');
   btn.innerText = 'Guardando...';
 
   const payload = {
     welcome_message: document.getElementById('welcome-message').value.trim(),
+    whatsapp_phone: document.getElementById('welcome-whatsapp').value.trim(),
     instagram_url: document.getElementById('welcome-instagram').value.trim(),
     location_url: document.getElementById('welcome-location').value.trim(),
     menu_url: document.getElementById('welcome-menu-url').value.trim(),
     welcome_enabled: document.getElementById('welcome-enabled').checked,
     updated_at: new Date().toISOString()
   };
-
-  console.log('[welcome] payload a guardar:', payload);
 
   try {
     const { data: updData, error: updError } = await supabase
@@ -131,23 +125,19 @@ document.getElementById('welcomeForm').addEventListener('submit', async (e) => {
       .eq('id', SITE_SETTINGS_ID)
       .select();
 
-    console.log('[welcome] update data:', updData, 'error:', updError);
-
     if (updError) throw updError;
 
     if (!updData || updData.length === 0) {
-      console.log('[welcome] No se actualizó ninguna fila. Insertando singleton...');
-      const { data: insData, error: insError } = await supabase
+      const { error: insError } = await supabase
         .from('site_settings')
         .insert([{ id: SITE_SETTINGS_ID, ...payload }])
         .select();
-      console.log('[welcome] insert data:', insData, 'error:', insError);
       if (insError) throw insError;
     }
 
     alert('Configuración de bienvenida guardada correctamente');
   } catch (err) {
-    console.error('[welcome] Error guardando:', err);
+    console.error('Error guardando:', err);
     alert('Error al guardar: ' + (err.message || JSON.stringify(err)));
   } finally {
     btn.innerText = 'Guardar Configuración';
