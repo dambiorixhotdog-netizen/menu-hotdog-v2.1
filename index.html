@@ -23,7 +23,7 @@
       
       <!-- BOTONES DE LA DERECHA -->
       <div class="flex items-center space-x-2">
-        <!-- NUEVO BOTÓN DE BIENVENIDA -->
+        <!-- BOTÓN DE BIENVENIDA -->
         <button onclick="window.openWelcomeModal()" title="Información y Contacto" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/40 p-2.5 md:px-3.5 md:py-2 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-1.5 transition-all">
           <i class="fa-solid fa-circle-info text-base"></i>
           <span class="hidden md:inline">Info</span>
@@ -63,14 +63,23 @@
     </button>
   </div>
 
-  <!-- CARRITO DRAWER -->
+  <!-- CARRITO DRAWER (CORREGIDO: 3 bloques flex) -->
   <div id="cartDrawer" class="fixed inset-0 z-[90] invisible transition-all duration-300">
     <div id="cartBackdrop" onclick="closeCartDrawer()" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
-    <div id="cartPanel" class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-slate-900 border-l border-amber-500/20 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300">
-      <div class="p-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between"><div class="flex items-center gap-2"><i class="fa-solid fa-basket-shopping text-amber-500 text-lg"></i><h3 class="font-title font-black text-amber-400 text-lg uppercase tracking-wide">Tu Pedido</h3></div><button onclick="closeCartDrawer()" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div>
+    
+    <div id="cartPanel" class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-slate-900 border-l border-amber-500/20 shadow-2xl flex flex-col h-full transform translate-x-full transition-transform duration-300">
+      
+      <!-- 1. Header FIJO -->
+      <div class="flex-shrink-0 p-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2"><i class="fa-solid fa-basket-shopping text-amber-500 text-lg"></i><h3 class="font-title font-black text-amber-400 text-lg uppercase tracking-wide">Tu Pedido</h3></div>
+        <button onclick="closeCartDrawer()" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <!-- 2. Cuerpo CON SCROLL -->
       <div id="cartItemsContainer" class="flex-grow overflow-y-auto p-4 space-y-3 divide-y divide-slate-800/60"></div>
       
-      <div class="p-4 bg-slate-950 border-t border-slate-800 space-y-4 pb-24 md:pb-4">
+      <!-- 3. Footer FIJO (Botones siempre visibles) -->
+      <div class="flex-shrink-0 p-4 bg-slate-950 border-t border-slate-800 space-y-3">
         <div class="space-y-3">
           <div><label class="block text-xs font-semibold text-slate-300 mb-1">Tu Nombre <span class="text-red-500">*</span></label><input type="text" id="customerName" placeholder="Ej. Juan Pérez" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-amber-500"></div>
           
@@ -97,34 +106,36 @@
             <label class="block text-xs font-semibold text-slate-300 mb-1">Dirección Exacta <span class="text-red-500">*</span></label>
             <input type="text" id="customerAddress" placeholder="Calle, número, sector..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:border-amber-500 mb-2">
             
-            <!-- BOTÓN PARA COMPARTIR UBICACIÓN -->
             <button type="button" onclick="shareLocation()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-2 transition-all">
-              <i class="fa-solid fa-location-dot"></i> Compartir Ubicación (Google Maps)
+              <i class="fa-solid fa-location-dot"></i> Compartir Ubicación
             </button>
             <input type="hidden" id="customerLocationURL" value="">
-            <p id="locationStatus" class="text-[10px] text-green-400 mt-1 hidden"><i class="fa-solid fa-check"></i> Ubicación adjuntada correctamente.</p>
+            <p id="locationStatus" class="text-[10px] text-green-400 mt-1 hidden"><i class="fa-solid fa-check"></i> Ubicación adjuntada.</p>
           </div>
 
           <div><label class="block text-xs font-semibold text-slate-300 mb-1">Notas</label><input type="text" id="orderNotes" placeholder="Ej. Sin mayonesa..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:border-amber-500"></div>
         </div>
+        
         <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1.5">
           <div class="flex justify-between text-xs text-slate-400"><span>Subtotal:</span><span id="cartSubtotal">$0</span></div>
           <div class="flex justify-between text-base font-black text-white pt-1 border-t border-slate-800"><span class="text-amber-400 font-title">TOTAL:</span><span id="cartTotal" class="text-amber-400">$0</span></div>
         </div>
         
-        <button onclick="confirmOrder()" class="w-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-600 hover:from-emerald-700 hover:to-emerald-600 text-white font-black py-3.5 rounded-xl shadow-lg font-title uppercase text-sm tracking-wider flex items-center justify-center gap-2 mt-2">
+        <button onclick="confirmOrder()" class="w-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-600 hover:from-emerald-700 hover:to-emerald-600 text-white font-black py-3.5 rounded-xl shadow-lg font-title uppercase text-sm tracking-wider flex items-center justify-center gap-2">
           <i class="fa-brands fa-whatsapp text-lg"></i> Confirmar y Enviar
         </button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL PRODUCTOS -->
-  <div id="categoryProductsModal" class="fixed inset-0 z-40 hidden flex items-center justify-center p-4 pb-20 md:pb-4 bg-slate-950/90 backdrop-blur-md overflow-y-auto">
-    <div class="bg-slate-900 border border-amber-500/40 rounded-3xl max-w-4xl w-full p-6 shadow-2xl relative space-y-5 my-8">
-      <button onclick="closeCategoryModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
-      <h2 id="modalCategoryTitle" class="font-title font-black text-2xl text-amber-400 uppercase tracking-wide text-center">Categoría</h2>
-      <div id="modalProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-4"></div>
+  <!-- MODAL PRODUCTOS (CORREGIDO) -->
+  <div id="categoryProductsModal" class="fixed inset-0 z-40 hidden flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md overflow-y-auto">
+    <div class="bg-slate-900 border border-amber-500/40 rounded-3xl max-w-4xl w-full shadow-2xl relative flex flex-col max-h-[85vh] my-8">
+      <div class="flex-shrink-0 p-6 pb-4 border-b border-slate-800/50 relative">
+        <button onclick="closeCategoryModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+        <h2 id="modalCategoryTitle" class="font-title font-black text-2xl text-amber-400 uppercase tracking-wide text-center">Categoría</h2>
+      </div>
+      <div id="modalProductsGrid" class="flex-grow overflow-y-auto p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 auto-rows-max"></div>
     </div>
   </div>
 
@@ -137,19 +148,35 @@
     </div>
   </div>
 
-  <!-- MODAL TICKET -->
+  <!-- MODAL TICKET (CORREGIDO) -->
   <div id="ticketModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md overflow-y-auto">
-    <div class="bg-slate-900 border-2 border-amber-500 rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-5 my-8">
-      <button onclick="closeTicketModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
-      <div id="printableTicket" class="bg-slate-950 p-5 rounded-2xl border border-amber-500/30 text-center space-y-4">
-        <div class="inline-block bg-red-600/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border border-red-500/30">¡Pedido Recibido!</div>
-        <div><span class="text-xs text-slate-400 uppercase tracking-widest font-bold">Tu Número de Turno</span><div id="ticketTurnoDisplay" class="text-5xl font-black font-title text-amber-400 my-1 tracking-tight amber-glow bg-amber-500/10 py-3 rounded-2xl border border-amber-500/40">#001</div><p class="text-xs text-slate-300">Guarda este número.</p></div>
-        <div class="border-t border-b border-dashed border-slate-800 py-2 my-2 text-left text-xs space-y-1"><p class="font-bold text-slate-200 text-center text-sm font-title">D’AMBIORIX HOTDOG</p><p class="text-center text-amber-400/80 text-[11px]">Higiene, Calidad y Sabor!!</p><div class="pt-2 flex justify-between text-slate-400"><span>Cliente: <strong id="ticketCustomer" class="text-white">--</strong></span><span>Tipo: <strong id="ticketType" class="text-white">--</strong></span></div><div class="flex justify-between text-slate-400"><span>Pago: <strong id="ticketPayment" class="text-white">--</strong></span><span>Fecha: <strong id="ticketDate" class="text-white">--</strong></span></div><div id="ticketAddressRow" class="hidden text-slate-400 pt-1"><span>Dir: <strong id="ticketAddress" class="text-white">--</strong></span></div><div id="ticketMapRow" class="hidden text-slate-400 pt-1"><span>Mapa: <a id="ticketMapLink" href="#" target="_blank" class="text-blue-400 underline font-bold">Ver ubicación exacta</a></span></div></div>
-        <div class="text-left space-y-1 text-xs"><p class="font-bold text-slate-300 uppercase text-[10px] tracking-wider mb-1">Detalle:</p><div id="ticketItemsList" class="space-y-1 divide-y divide-slate-800/50"></div></div>
-        <div class="border-t border-slate-800 pt-2 flex justify-between items-center text-sm"><span class="font-bold text-slate-300">TOTAL:</span><span id="ticketTotal" class="font-black text-amber-400 text-lg">$0</span></div>
-        <div id="ticketNotesContainer" class="hidden text-left bg-slate-900 p-2 rounded text-[11px] text-slate-400 border border-slate-800"><strong>Notas:</strong> <span id="ticketNotes">--</span></div>
+    <div class="bg-slate-900 border-2 border-amber-500 rounded-3xl max-w-md w-full shadow-2xl relative flex flex-col max-h-[90vh] my-8">
+      
+      <!-- Header Fijo -->
+      <div class="flex-shrink-0 p-4 border-b border-slate-800/50 relative">
+        <button onclick="closeTicketModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <div class="space-y-2"><button onclick="sendWhatsAppOrder()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm"><i class="fa-brands fa-whatsapp text-lg"></i> Enviar por WhatsApp</button><div class="grid grid-cols-2 gap-2"><button onclick="printTicket()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 border border-slate-700"><i class="fa-solid fa-print"></i> Imprimir</button><button onclick="closeTicketModal()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center border border-amber-500/40">Nuevo Pedido</button></div></div>
+
+      <!-- Cuerpo con Scroll (El ticket en sí) -->
+      <div class="flex-grow overflow-y-auto p-4">
+        <div id="printableTicket" class="bg-slate-950 p-5 rounded-2xl border border-amber-500/30 text-center space-y-4">
+          <div class="inline-block bg-red-600/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border border-red-500/30">¡Pedido Recibido!</div>
+          <div><span class="text-xs text-slate-400 uppercase tracking-widest font-bold">Tu Número de Turno</span><div id="ticketTurnoDisplay" class="text-5xl font-black font-title text-amber-400 my-1 tracking-tight amber-glow bg-amber-500/10 py-3 rounded-2xl border border-amber-500/40">#001</div><p class="text-xs text-slate-300">Guarda este número.</p></div>
+          <div class="border-t border-b border-dashed border-slate-800 py-2 my-2 text-left text-xs space-y-1"><p class="font-bold text-slate-200 text-center text-sm font-title">D’AMBIORIX HOTDOG</p><p class="text-center text-amber-400/80 text-[11px]">Higiene, Calidad y Sabor!!</p><div class="pt-2 flex justify-between text-slate-400"><span>Cliente: <strong id="ticketCustomer" class="text-white">--</strong></span><span>Tipo: <strong id="ticketType" class="text-white">--</strong></span></div><div class="flex justify-between text-slate-400"><span>Pago: <strong id="ticketPayment" class="text-white">--</strong></span><span>Fecha: <strong id="ticketDate" class="text-white">--</strong></span></div><div id="ticketAddressRow" class="hidden text-slate-400 pt-1"><span>Dir: <strong id="ticketAddress" class="text-white">--</strong></span></div><div id="ticketMapRow" class="hidden text-slate-400 pt-1"><span>Mapa: <a id="ticketMapLink" href="#" target="_blank" class="text-blue-400 underline font-bold">Ver ubicación</a></span></div></div>
+          <div class="text-left space-y-1 text-xs"><p class="font-bold text-slate-300 uppercase text-[10px] tracking-wider mb-1">Detalle:</p><div id="ticketItemsList" class="space-y-1 divide-y divide-slate-800/50"></div></div>
+          <div class="border-t border-slate-800 pt-2 flex justify-between items-center text-sm"><span class="font-bold text-slate-300">TOTAL:</span><span id="ticketTotal" class="font-black text-amber-400 text-lg">$0</span></div>
+          <div id="ticketNotesContainer" class="hidden text-left bg-slate-900 p-2 rounded text-[11px] text-slate-400 border border-slate-800"><strong>Notas:</strong> <span id="ticketNotes">--</span></div>
+        </div>
+      </div>
+
+      <!-- Footer Fijo -->
+      <div class="flex-shrink-0 p-4 pt-2 space-y-2 border-t border-slate-800">
+        <button onclick="sendWhatsAppOrder()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm"><i class="fa-brands fa-whatsapp text-lg"></i> Enviar por WhatsApp</button>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="printTicket()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 border border-slate-700"><i class="fa-solid fa-print"></i> Imprimir</button>
+          <button onclick="closeTicketModal()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center border border-amber-500/40">Nuevo Pedido</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -164,40 +191,44 @@
     </div>
   </div>
 
-  <!-- MODAL BIENVENIDA -->
+  <!-- MODAL BIENVENIDA (CORREGIDO) -->
   <div id="welcomeModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-md overflow-y-auto">
-    <div class="bg-slate-900 border-2 border-amber-500/50 rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-5 my-8">
-      <button onclick="closeWelcomeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+    <div class="bg-slate-900 border-2 border-amber-500/50 rounded-3xl max-w-md w-full shadow-2xl relative flex flex-col max-h-[90vh] my-8">
+      
+      <!-- Header Fijo -->
+      <div class="flex-shrink-0 p-4 pb-0 relative text-center">
+        <button onclick="closeWelcomeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+      </div>
 
-      <!-- Logo / Título -->
-      <div class="text-center space-y-2">
-        <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-red-600 via-amber-500 to-yellow-400 p-0.5 mx-auto shadow-md">
-          <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center">
-            <i class="fa-solid font-bold text-amber-500 text-2xl fa-hotdog"></i>
+      <!-- Cuerpo con Scroll -->
+      <div class="flex-grow overflow-y-auto p-6 pt-2 space-y-5">
+        <div class="text-center space-y-2">
+          <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-red-600 via-amber-500 to-yellow-400 p-0.5 mx-auto shadow-md">
+            <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center">
+              <i class="fa-solid font-bold text-amber-500 text-2xl fa-hotdog"></i>
+            </div>
           </div>
+          <h2 class="font-title font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-red-500 to-amber-200 uppercase leading-tight">D’AMBIORIX HOTDOG</h2>
+          <p class="text-xs text-amber-400/80 font-medium tracking-wider"><i class="fa-solid fa-certificate text-[10px] mr-1 text-red-500"></i>Higiene, Calidad y Sabor!!</p>
         </div>
-        <h2 class="font-title font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-red-500 to-amber-200 uppercase leading-tight">D’AMBIORIX HOTDOG</h2>
-        <p class="text-xs text-amber-400/80 font-medium tracking-wider"><i class="fa-solid fa-certificate text-[10px] mr-1 text-red-500"></i>Higiene, Calidad y Sabor!!</p>
+
+        <p id="welcomeMessage" class="text-center text-sm text-slate-300 leading-relaxed bg-slate-800/60 border border-slate-700/60 rounded-2xl p-3">¡Bienvenido!</p>
+
+        <div class="grid grid-cols-1 gap-2">
+          <a id="welcomeWhatsappBtn" href="#" target="_blank" rel="noopener" class="hidden w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm transition-all">
+            <i class="fa-brands fa-whatsapp text-xl"></i> Escríbenos por WhatsApp
+          </a>
+          <a id="welcomeInstagramBtn" href="#" target="_blank" rel="noopener" class="hidden w-full bg-gradient-to-r from-pink-600 via-purple-600 to-orange-500 hover:opacity-90 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm transition-all">
+            <i class="fa-brands fa-instagram text-xl"></i> Síguenos en Instagram
+          </a>
+          <a id="welcomeLocationBtn" href="#" target="_blank" rel="noopener" class="hidden w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm transition-all">
+            <i class="fa-solid fa-location-dot text-xl"></i> Ver Ubicación
+          </a>
+        </div>
       </div>
 
-      <!-- Mensaje editable -->
-      <p id="welcomeMessage" class="text-center text-sm text-slate-300 leading-relaxed bg-slate-800/60 border border-slate-700/60 rounded-2xl p-3">¡Bienvenido!</p>
-
-      <!-- Botones de contacto -->
-      <div class="grid grid-cols-1 gap-2">
-        <a id="welcomeWhatsappBtn" href="#" target="_blank" rel="noopener" class="hidden w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm transition-all">
-          <i class="fa-brands fa-whatsapp text-xl"></i> Escríbenos por WhatsApp
-        </a>
-        <a id="welcomeInstagramBtn" href="#" target="_blank" rel="noopener" class="hidden w-full bg-gradient-to-r from-pink-600 via-purple-600 to-orange-500 hover:opacity-90 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm transition-all">
-          <i class="fa-brands fa-instagram text-xl"></i> Síguenos en Instagram
-        </a>
-        <a id="welcomeLocationBtn" href="#" target="_blank" rel="noopener" class="hidden w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm transition-all">
-          <i class="fa-solid fa-location-dot text-xl"></i> Ver Ubicación
-        </a>
-      </div>
-
-      <!-- Acciones -->
-      <div class="space-y-2 pt-2 border-t border-slate-800">
+      <!-- Footer Fijo (Acciones) -->
+      <div class="flex-shrink-0 p-4 border-t border-slate-800 space-y-2 bg-slate-900 rounded-b-3xl">
         <button onclick="welcomeGoToMenu()" class="w-full bg-gradient-to-r from-amber-500 to-red-600 hover:from-amber-600 hover:to-red-700 text-slate-950 font-black py-3.5 rounded-xl shadow-lg font-title uppercase text-sm tracking-wider flex items-center justify-center gap-2 transition-all">
           <i class="fa-solid fa-burger"></i> Ver Menú
         </button>
